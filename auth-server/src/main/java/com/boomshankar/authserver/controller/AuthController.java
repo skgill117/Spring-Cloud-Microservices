@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import com.boomshankar.authserver.service.UserService;
 
 @RestController
 public class AuthController {
+	
 
 	@Autowired
 	private UserService userService;
@@ -39,6 +41,33 @@ public class AuthController {
 			@RequestParam(value = "password") String password) throws UserNotFoundException {
 		return validateAndGetUser(emailOrPhone, password);
 	}
+	
+	
+    @RequestMapping(value = "/create-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createUser(@RequestBody UserDto user) {
+    	ResponseEntity<String> responseEntity = null;
+    	try{
+    	 userService.createUser(user);
+    	 responseEntity = new ResponseEntity<String>("user created successfully", HttpStatus.OK);
+    		
+    	} catch (Exception ex) {
+    		responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return responseEntity;
+    }
+    
+    @RequestMapping(value = "/update-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateUser(@RequestBody UserDto user) {
+    	ResponseEntity<String> responseEntity = null;
+    	try{
+    	 userService.updateUser(user);
+    	 responseEntity = new ResponseEntity<String>("user updated successfully", HttpStatus.OK);
+    		
+    	} catch (Exception ex) {
+    		responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return responseEntity;
+    }
 
 	private ResponseEntity<UserDto> validateAndGetUser(String emailOrPhone, String password) {
 		ResponseEntity<UserDto> responseEntity = null;
