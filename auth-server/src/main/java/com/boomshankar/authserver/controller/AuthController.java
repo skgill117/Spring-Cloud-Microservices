@@ -1,5 +1,7 @@
 package com.boomshankar.authserver.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,11 +17,11 @@ import com.boomshankar.authserver.exceptions.AuthorizationException;
 import com.boomshankar.authserver.exceptions.InvalidPasswordException;
 import com.boomshankar.authserver.exceptions.UserAlreadyExistException;
 import com.boomshankar.authserver.exceptions.UserNotFoundException;
+import com.boomshankar.authserver.model.User;
 import com.boomshankar.authserver.service.UserService;
 
 @RestController
 public class AuthController {
-	
 
 	@Autowired
 	private UserService userService;
@@ -36,38 +38,46 @@ public class AuthController {
 	 * @return
 	 * @throws UserNotFoundException
 	 */
+
+	@RequestMapping(value = "/get-users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<User>> getAllUsers() throws UserNotFoundException {
+		ResponseEntity<List<User>> responseEntity = null;
+		responseEntity = new ResponseEntity<List<User>>(userService.getAllUsers(), HttpStatus.OK);
+		return responseEntity;
+
+	}
+
 	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserDto> getUser(@RequestParam(value = "emailOrPhone") String emailOrPhone,
 			@RequestParam(value = "password") String password) throws UserNotFoundException {
 		return validateAndGetUser(emailOrPhone, password);
 	}
-	
-	
-    @RequestMapping(value = "/create-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createUser(@RequestBody UserDto user) {
-    	ResponseEntity<String> responseEntity = null;
-    	try{
-    	 userService.createUser(user);
-    	 responseEntity = new ResponseEntity<String>("user created successfully", HttpStatus.OK);
-    		
-    	} catch (Exception ex) {
-    		responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return responseEntity;
-    }
-    
-    @RequestMapping(value = "/update-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateUser(@RequestBody UserDto user) {
-    	ResponseEntity<String> responseEntity = null;
-    	try{
-    	 userService.updateUser(user);
-    	 responseEntity = new ResponseEntity<String>("user updated successfully", HttpStatus.OK);
-    		
-    	} catch (Exception ex) {
-    		responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return responseEntity;
-    }
+
+	@RequestMapping(value = "/create-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createUser(@RequestBody UserDto user) {
+		ResponseEntity<String> responseEntity = null;
+		try {
+			userService.createUser(user);
+			responseEntity = new ResponseEntity<String>("user created successfully", HttpStatus.OK);
+
+		} catch (Exception ex) {
+			responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return responseEntity;
+	}
+
+	@RequestMapping(value = "/update-user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateUser(@RequestBody UserDto user) {
+		ResponseEntity<String> responseEntity = null;
+		try {
+			userService.updateUser(user);
+			responseEntity = new ResponseEntity<String>("user updated successfully", HttpStatus.OK);
+
+		} catch (Exception ex) {
+			responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return responseEntity;
+	}
 
 	private ResponseEntity<UserDto> validateAndGetUser(String emailOrPhone, String password) {
 		ResponseEntity<UserDto> responseEntity = null;

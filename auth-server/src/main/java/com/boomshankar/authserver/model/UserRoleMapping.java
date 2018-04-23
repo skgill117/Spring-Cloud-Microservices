@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "role", catalog = "user_role_mapping")
+@Table(name = "role", catalog = "customer_details")
 public class UserRoleMapping implements Serializable {
 
 	/**
