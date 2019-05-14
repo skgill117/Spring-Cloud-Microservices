@@ -1,7 +1,5 @@
 package com.boomshankar.authserver.security;
 
-import javax.servlet.Filter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
